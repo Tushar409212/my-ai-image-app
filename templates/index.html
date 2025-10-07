@@ -37,4 +37,123 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         #image-display { margin-top: 20px; min-height: 256px; background: #f0f2f5; border-radius: 8px; display: flex; justify-content: center; align-items: center; }
-        #result-image { max-width: 100%;
+        #result-image { max-width: 100%; border-radius: 8px; }
+        
+        .error-message { color: #fa383e; margin-top: 15px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Image Generator</h1>
+        
+        <div class="mode-selector">
+            <label><input type="radio" name="mode" value="text-to-image" checked> Text to Image</label>
+            <label><input type="radio" name="mode" value="image-to-image"> Image to Image</label>
+        </div>
+
+        <input type="text" id="prompt-input" placeholder="Describe what you want to create...">
+        
+        <div id="image-file-container" style="display: none;">
+            <label for="image-file-input">Upload an image from your computer:</label>
+            <input type="file" id="image-file-input" accept="image/*">
+        </div>
+        
+        <button id="generate-btn" class="button">Generate Image</button>
+        <div class="loader" id="loader"></div>
+        <div class="error-message" id="error-message"></div>
+        
+        <div id="image-display">
+            <img id="result-image" src="" alt="">
+        </div>
+        
+        <a id="download-btn" class="button hidden" href="#" download="ai-generated-image.png">Download Image</a>
+        
+    </div>
+
+    <script>
+        const promptInput = document.getElementById('prompt-input');
+        const imageFileInput = document.getElementById('image-file-input');
+        const imageFileContainer = document.getElementById('image-file-container');
+        const generateBtn = document.getElementById('generate-btn');
+        const loader = document.getElementById('loader');
+        const resultImage = document.getElementById('result-image');
+        const errorMessage = document.getElementById('error-message');
+        const modeRadios = document.querySelectorAll('input[name="mode"]');
+        const downloadBtn = document.getElementById('download-btn');
+
+        modeRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                if (event.target.value === 'image-to-image') {
+                    imageFileContainer.style.display = 'block';
+                } else {
+                    imageFileContainer.style.display = 'none';
+                }
+            });
+        });
+
+        generateBtn.addEventListener('click', async () => {
+            const selectedMode = document.querySelector('input[name="mode"]:checked').value;
+            const prompt = promptInput.value;
+            
+            if (!prompt) {
+                alert('Please enter a prompt.');
+                return;
+            }
+
+            let endpoint = '';
+            let requestOptions = {};
+
+            if (selectedMode === 'text-to-image') {
+                endpoint = '/generate-image';
+                requestOptions = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt })
+                };
+            } else {
+                const imageFile = imageFileInput.files[0];
+                if (!imageFile) {
+                    alert('Please upload an image file.');
+                    return;
+                }
+                endpoint = '/transform-image';
+                const formData = new FormData();
+                formData.append('prompt', prompt);
+                formData.append('imageFile', imageFile);
+                requestOptions = {
+                    method: 'POST',
+                    body: formData
+                };
+            }
+
+            generateBtn.disabled = true;
+            loader.style.display = 'block';
+            resultImage.src = '';
+            errorMessage.textContent = '';
+            downloadBtn.classList.add('hidden');
+
+            try {
+                const response = await fetch(endpoint, requestOptions);
+
+                if (response.ok) {
+                    const imageBlob = await response.blob();
+                    const imageUrl = URL.createObjectURL(imageBlob);
+                    resultImage.src = imageUrl;
+                    downloadBtn.href = imageUrl;
+                    downloadBtn.classList.remove('hidden');
+                } else {
+                    const errorData = await response.json();
+                    errorMessage.textContent = errorData.error || 'Failed to generate image.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+            } finally {
+                generateBtn.disabled = false;
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
