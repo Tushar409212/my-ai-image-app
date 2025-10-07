@@ -11,14 +11,43 @@
         input[type="text"], input[type="file"] { width: calc(100% - 24px); padding: 12px; font-size: 1em; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; }
         .mode-selector { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
         .mode-selector label { cursor: pointer; }
-        #image-file-container { display: none; } /* প্রাথমিকভাবে হিডেন */
-        button { width: 100%; padding: 14px; font-size: 1.1em; font-weight: bold; color: white; background-color: #1877f2; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; }
-        button:disabled { background-color: #ccd0d5; cursor: not-allowed; }
+        #image-file-container { display: none; }
+        
+        /* বাটন এবং ডাউনলোড লিংকের জন্য সাধারণ স্টাইল */
+        .button {
+            display: inline-block;
+            width: calc(100% - 28px);
+            padding: 14px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 15px;
+        }
+        #generate-btn { background-color: #1877f2; }
+        #generate-btn:hover { background-color: #166fe5; }
+        #generate-btn:disabled { background-color: #ccd0d5; cursor: not-allowed; }
+        
+        /* নতুন ডাউনলোড বাটনের জন্য স্টাইল */
+        #download-btn {
+            background-color: #42b72a; /* সবুজ রঙ */
+        }
+        #download-btn:hover {
+            background-color: #36a420;
+        }
+        
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #1877f2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #image-display { margin-top: 30px; min-height: 256px; background: #f0f2f5; border-radius: 8px; display: flex; justify-content: center; align-items: center; }
+        
+        #image-display { margin-top: 20px; min-height: 256px; background: #f0f2f5; border-radius: 8px; display: flex; justify-content: center; align-items: center; }
         #result-image { max-width: 100%; border-radius: 8px; }
+        
         .error-message { color: #fa383e; margin-top: 15px; }
+        .hidden { display: none; } /* এলিমেন্ট লুকানোর জন্য এই ক্লাসটি ব্যবহার করা হবে */
     </style>
 </head>
 <body>
@@ -31,20 +60,25 @@
         </div>
 
         <input type="text" id="prompt-input" placeholder="Describe what you want to create...">
-        <div id="image-file-container">
+        <div id="image-file-container" class="hidden">
             <label for="image-file-input">Upload an image from your computer:</label>
             <input type="file" id="image-file-input" accept="image/*">
         </div>
         
-        <button id="generate-btn">Generate Image</button>
+        <button id="generate-btn" class="button">Generate Image</button>
         <div class="loader" id="loader"></div>
         <div class="error-message" id="error-message"></div>
+        
         <div id="image-display">
             <img id="result-image" src="" alt="">
         </div>
+        
+        <a id="download-btn" class="button hidden" href="#" download="ai-generated-image.png">Download Image</a>
+        
     </div>
 
     <script>
+        // পুরোনো সব ভেরিয়েবল আগের মতোই থাকছে
         const promptInput = document.getElementById('prompt-input');
         const imageFileInput = document.getElementById('image-file-input');
         const imageFileContainer = document.getElementById('image-file-container');
@@ -53,59 +87,48 @@
         const resultImage = document.getElementById('result-image');
         const errorMessage = document.getElementById('error-message');
         const modeRadios = document.querySelectorAll('input[name="mode"]');
+        
+        // নতুন ডাউনলোড বাটনের জন্য একটি ভেরিয়েবল
+        const downloadBtn = document.getElementById('download-btn');
 
         modeRadios.forEach(radio => {
             radio.addEventListener('change', (event) => {
                 if (event.target.value === 'image-to-image') {
-                    imageFileContainer.style.display = 'block';
+                    imageFileContainer.classList.remove('hidden');
                 } else {
-                    imageFileContainer.style.display = 'none';
+                    imageFileContainer.classList.add('hidden');
                 }
             });
         });
 
         generateBtn.addEventListener('click', async () => {
+            // ... (আগের কোড একই থাকছে)
             const selectedMode = document.querySelector('input[name="mode"]:checked').value;
             const prompt = promptInput.value;
-            
-            if (!prompt) {
-                alert('Please enter a prompt.');
-                return;
-            }
+            if (!prompt) { /* ... */ }
 
             let endpoint = '';
             let requestOptions = {};
-
+            // ... (মোড সিলেকশন এবং ফাইল আপলোডের FormData তৈরির লজিক একই থাকছে)
             if (selectedMode === 'text-to-image') {
                 endpoint = '/generate-image';
-                requestOptions = {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt })
-                };
+                requestOptions = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: prompt }) };
             } else {
                 const imageFile = imageFileInput.files[0];
-                if (!imageFile) {
-                    alert('Please upload an image file.');
-                    return;
-                }
+                if (!imageFile) { alert('Please upload an image file.'); return; }
                 endpoint = '/transform-image';
-                
-                // ফাইল আপলোডের জন্য FormData ব্যবহার করা হচ্ছে
                 const formData = new FormData();
                 formData.append('prompt', prompt);
                 formData.append('imageFile', imageFile);
-
-                requestOptions = {
-                    method: 'POST',
-                    body: formData // Headers এখানে সেট করার প্রয়োজন নেই, ব্রাউজার নিজে করবে
-                };
+                requestOptions = { method: 'POST', body: formData };
             }
 
+            // UI আপডেট
             generateBtn.disabled = true;
             loader.style.display = 'block';
             resultImage.src = '';
             errorMessage.textContent = '';
+            downloadBtn.classList.add('hidden'); // নতুন জেনারেশন শুরু হলে ডাউনলোড বাটনটি আবার হাইড করা হচ্ছে
 
             try {
                 const response = await fetch(endpoint, requestOptions);
@@ -114,6 +137,12 @@
                     const imageBlob = await response.blob();
                     const imageUrl = URL.createObjectURL(imageBlob);
                     resultImage.src = imageUrl;
+
+                    // --- নতুন কোড ---
+                    // ছবি সফলভাবে লোড হওয়ার পর ডাউনলোড বাটনের লিংক সেট করা হচ্ছে এবং সেটিকে দৃশ্যমান করা হচ্ছে
+                    downloadBtn.href = imageUrl;
+                    downloadBtn.classList.remove('hidden');
+
                 } else {
                     const errorData = await response.json();
                     errorMessage.textContent = errorData.error || 'Failed to generate image.';
