@@ -3,214 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Image Generator</title>
+    <title>AI Image Generator | Abdun Nur</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root {
-            --background-color: #121826;
-            --container-bg: rgba(30, 41, 59, 0.5);
-            --input-bg: rgba(51, 65, 85, 0.7);
-            --text-primary: #f0f2f5;
-            --text-secondary: #94a3b8;
-            --accent-color: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --border-color: rgba(148, 163, 184, 0.2);
+            --background-color: #0d1117;
+            --container-bg: rgba(22, 27, 34, 0.6);
+            --input-bg: rgba(13, 17, 23, 0.8);
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-color: #58a6ff;
+            --accent-hover: #79c0ff;
+            --border-color: rgba(139, 148, 158, 0.2);
         }
         
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--background-color);
-            background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.1) 1px, transparent 0);
-            background-size: 20px 20px;
-            color: var(--text-primary);
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            overflow: hidden; /* অ্যানিমেশনের জন্য */
+            position: relative;
+        }
+
+        /* নতুন: অ্যানিমেটেড ব্যাকগ্রাউন্ড */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, rgba(88, 166, 255, 0.1), rgba(45, 212, 191, 0.1), rgba(168, 85, 247, 0.1));
+            background-size: 400% 400%;
+            animation: gradient-animation 15s ease infinite;
+        }
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
             width: 100%;
             max-width: 500px;
             background: var(--container-bg);
-            padding: 30px;
+            padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
             border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             text-align: center;
+            z-index: 1;
         }
 
         h1 {
             color: var(--text-primary);
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 2em;
+            margin-bottom: 5px;
         }
         
-        .container > p {
+        /* নতুন: আপনার জন্য সাবটাইটেল */
+        .subtitle {
             color: var(--text-secondary);
-            margin-top: 0;
             margin-bottom: 25px;
-        }
-        
-        /* নতুন: মোড সিলেক্টরের জন্য স্টাইল */
-        .mode-selector {
-            display: flex;
-            background-color: var(--input-bg);
-            border-radius: 10px;
-            padding: 5px;
-            margin-bottom: 20px;
-        }
-        .mode-selector input[type="radio"] {
-            display: none;
-        }
-        .mode-selector label {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-            font-weight: 500;
-        }
-        .mode-selector input[type="radio"]:checked + label {
-            background-color: var(--accent-color);
-            color: var(--background-color);
+            font-weight: 300;
         }
 
-        /* নতুন: ইনপুট বক্সের জন্য স্টাইল */
-        .input-group {
-            position: relative;
-            margin-bottom: 15px;
-        }
-        .input-group i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-        }
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
         input[type="text"], input[type="number"] {
-            box-sizing: border-box;
-            width: 100%;
-            padding: 12px 12px 12px 40px; /* আইকনের জন্য জায়গা */
-            font-size: 1em;
-            font-family: 'Poppins', sans-serif;
-            border: 1px solid var(--border-color);
-            background-color: var(--input-bg);
-            color: var(--text-primary);
-            border-radius: 8px;
-            transition: border-color 0.3s;
+            width: 100%; padding: 14px 14px 14px 45px;
+            font-size: 1em; font-family: 'Roboto', sans-serif;
+            border: 1px solid var(--border-color); background-color: var(--input-bg);
+            color: var(--text-primary); border-radius: 8px; transition: border-color 0.3s, box-shadow 0.3s;
         }
         input[type="text"]:focus, input[type="number"]:focus {
-            outline: none;
-            border-color: var(--accent-color);
+            outline: none; border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
         }
         
         .dimension-controls { display: flex; gap: 10px; }
-        .dimension-controls .input-group { flex: 1; }
+        .dimension-controls .input-group { flex: 1; text-align: left; }
+        .dimension-controls label { font-size: 0.8em; color: var(--text-secondary); margin-left: 5px; margin-bottom: 5px; display: block; }
         
         .button {
-            display: inline-block; box-sizing: border-box;
-            width: 100%; padding: 14px; font-size: 1.1em; font-weight: 600;
+            display: inline-block; width: 100%; padding: 14px; font-size: 1.1em; font-weight: 700;
             color: #fff; text-decoration: none; border: none; border-radius: 8px;
-            cursor: pointer; transition: all 0.3s ease;
-            margin-bottom: 15px;
-            background: linear-gradient(45deg, var(--accent-color), var(--accent-hover));
+            cursor: pointer; transition: all 0.3s ease; margin-bottom: 15px;
+            background: var(--accent-color);
         }
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.4);
-        }
-        .button:disabled {
-            background: var(--input-bg);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        #download-btn { background: linear-gradient(45deg, #22c55e, #16a34a); }
-        #download-btn:hover { box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4); }
-
-        .loader { /* ... (অপরিবর্তিত) ... */ }
-        @keyframes spin { /* ... (অপরিবর্তিত) ... */ }
+        .button:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 4px 20px rgba(88, 166, 255, 0.2); }
+        .button:disabled { background: #30363d; cursor: not-allowed; transform: none; box-shadow: none; }
+        #download-btn { background: #238636; }
+        #download-btn:hover { background: #2ea043; box-shadow: 0 4px 20px rgba(46, 160, 67, 0.2); }
         
-        #image-display {
-            margin-top: 20px;
-            min-height: 256px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: transparent;
-            border: none;
-        }
-        #result-image {
-            max-width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            opacity: 0; /* প্রাথমিকভাবে অদৃশ্য */
-            transition: opacity 0.5s ease-in-out;
-        }
-        #result-image.visible {
-            opacity: 1; /* দৃশ্যমান করার জন্য ক্লাস */
-        }
+        .loader { /* ... (অপরিবর্তিত) ... */ }
+        
+        #image-display { margin-top: 20px; min-height: 256px; border-radius: 12px; display: flex; justify-content: center; align-items: center; background: transparent; }
+        #result-image { max-width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); opacity: 0; transform: scale(0.95); transition: opacity 0.5s ease, transform 0.5s ease; }
+        #result-image.visible { opacity: 1; transform: scale(1); }
         
         .error-message { color: #f87171; margin-top: 15px; }
         .hidden { display: none; }
         
-        footer { margin-top: 30px; color: var(--text-secondary); font-size: 0.9em; }
-        footer a { color: var(--accent-color); text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-
-        @media (max-width: 600px) {
-            body { padding: 10px; }
-            .container { padding: 20px; }
-            h1 { font-size: 1.5em; }
-        }
+        footer { margin-top: 40px; color: var(--text-secondary); font-size: 0.9em; }
+        
+        @media (max-width: 600px) { body { padding: 10px; } .container { padding: 20px; } h1 { font-size: 1.5em; } }
     </style>
 </head>
 <body>
+    <div class="background-animation"></div>
     <div class="container">
-        <h1>AI Image Generator</h1>
-        <p>Craft your vision. Describe any image, and let AI bring it to life.</p>
+        <h1>AI Digital Canvas</h1>
+        <p class="subtitle">An Engineering Vision by Abdun Nur</p>
         
-        <div class="mode-selector">
-            <input type="radio" id="mode-text" name="mode" value="text-to-image" checked>
-            <label for="mode-text">Text to Image</label>
-            <input type="radio" id="mode-image" name="mode" value="image-to-image">
-            <label for="mode-image">Image to Image</label>
-        </div>
-
         <div class="input-group">
-            <i class="fa-solid fa-pen-fancy"></i>
-            <input type="text" id="prompt-input" placeholder="Describe what you want to create...">
-        </div>
-        
-        <div id="image-url-container" style="display: none;">
-            <div class="input-group">
-                <i class="fa-solid fa-link"></i>
-                <input type="text" id="image-url-input" placeholder="Paste an image URL here...">
-            </div>
+            <i class="fa-solid fa-lightbulb"></i>
+            <input type="text" id="prompt-input" placeholder="e.g., A futuristic bridge, sustainable city...">
         </div>
         
         <div class="dimension-controls">
             <div class="input-group">
-                <i class="fa-solid fa-arrows-left-right"></i>
-                <input type="number" id="width-input" value="512" min="256" max="1024" step="64" title="Width">
+                <label for="width-input">Width</label>
+                <input type="number" id="width-input" value="512" min="256" max="1024" step="64">
             </div>
             <div class="input-group">
-                <i class="fa-solid fa-arrows-up-down"></i>
-                <input type="number" id="height-input" value="512" min="256" max="1024" step="64" title="Height">
+                <label for="height-input">Height</label>
+                <input type="number" id="height-input" value="512" min="256" max="1024" step="64">
             </div>
         </div>
         
-        <button id="generate-btn" class="button">Generate Image</button>
+        <button id="generate-btn" class="button">Generate <i class="fa-solid fa-wand-magic-sparkles"></i></button>
         <div class="loader" id="loader"></div>
         <div class="error-message" id="error-message"></div>
         
@@ -222,35 +161,20 @@
     </div>
     
     <footer>
-        <p>Created by Abdun Nur</p>
+        <p>Created by Abdun Nur & Gemini</p>
     </footer>
 
     <script>
-        // ... (ভেরিয়েবল ডিক্লারেশন অপরিবর্তিত) ...
         const promptInput = document.getElementById('prompt-input');
-        const imageUrlInput = document.getElementById('image-url-input');
-        const imageUrlContainer = document.getElementById('image-url-container');
         const widthInput = document.getElementById('width-input');
         const heightInput = document.getElementById('height-input');
         const generateBtn = document.getElementById('generate-btn');
         const loader = document.getElementById('loader');
         const resultImage = document.getElementById('result-image');
         const errorMessage = document.getElementById('error-message');
-        const modeRadios = document.querySelectorAll('input[name="mode"]');
         const downloadBtn = document.getElementById('download-btn');
-        
-        modeRadios.forEach(radio => {
-            radio.addEventListener('change', (event) => {
-                if (event.target.value === 'image-to-image') {
-                    imageUrlContainer.style.display = 'block';
-                } else {
-                    imageUrlContainer.style.display = 'none';
-                }
-            });
-        });
 
         generateBtn.addEventListener('click', async () => {
-            const selectedMode = document.querySelector('input[name="mode"]:checked').value;
             const prompt = promptInput.value;
             const width = widthInput.value;
             const height = heightInput.value;
@@ -260,23 +184,10 @@
                 return;
             }
 
-            let endpoint = '';
-            let payload = {};
+            const endpoint = '/generate-image';
+            const payload = { prompt, width, height };
 
-            if (selectedMode === 'text-to-image') {
-                endpoint = '/generate-image';
-                payload = { prompt: prompt, width: width, height: height };
-            } else {
-                const imageUrl = imageUrlInput.value;
-                if (!imageUrl) {
-                    alert('Please provide an image URL.');
-                    return;
-                }
-                endpoint = '/transform-image';
-                payload = { prompt: prompt, imageUrl: imageUrl, width: width, height: height };
-            }
-
-            let requestOptions = {
+            const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -285,7 +196,7 @@
             generateBtn.disabled = true;
             loader.style.display = 'block';
             resultImage.src = '';
-            resultImage.classList.remove('visible'); // অ্যানিমেশন ক্লাস সরানো হলো
+            resultImage.classList.remove('visible');
             errorMessage.textContent = '';
             downloadBtn.classList.add('hidden');
 
@@ -296,7 +207,7 @@
                     const imageBlob = await response.blob();
                     const imageUrl = URL.createObjectURL(imageBlob);
                     resultImage.src = imageUrl;
-                    resultImage.classList.add('visible'); // ফেড-ইন অ্যানিমেশনের জন্য ক্লাস যোগ
+                    resultImage.classList.add('visible');
                     downloadBtn.href = imageUrl;
                     downloadBtn.classList.remove('hidden');
                 } else {
