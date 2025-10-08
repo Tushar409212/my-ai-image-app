@@ -4,46 +4,210 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Image Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 500px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); text-align: center; }
-        h1 { color: #1c1e21; margin-bottom: 20px; }
-        input[type="text"] { box-sizing: border-box; width: 100%; padding: 12px; font-size: 1em; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; }
-        .mode-selector { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
-        .mode-selector label { cursor: pointer; }
+        :root {
+            --background-color: #121826;
+            --container-bg: rgba(30, 41, 59, 0.5);
+            --input-bg: rgba(51, 65, 85, 0.7);
+            --text-primary: #f0f2f5;
+            --text-secondary: #94a3b8;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --border-color: rgba(148, 163, 184, 0.2);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.1) 1px, transparent 0);
+            background-size: 20px 20px;
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .container > p {
+            color: var(--text-secondary);
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        
+        /* নতুন: মোড সিলেক্টরের জন্য স্টাইল */
+        .mode-selector {
+            display: flex;
+            background-color: var(--input-bg);
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+        .mode-selector input[type="radio"] {
+            display: none;
+        }
+        .mode-selector label {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: 500;
+        }
+        .mode-selector input[type="radio"]:checked + label {
+            background-color: var(--accent-color);
+            color: var(--background-color);
+        }
+
+        /* নতুন: ইনপুট বক্সের জন্য স্টাইল */
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        input[type="text"], input[type="number"] {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px 12px 12px 40px; /* আইকনের জন্য জায়গা */
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        
+        .dimension-controls { display: flex; gap: 10px; }
+        .dimension-controls .input-group { flex: 1; }
         
         .button {
             display: inline-block; box-sizing: border-box;
-            width: 100%; padding: 14px; font-size: 1.1em; font-weight: bold; color: white; text-decoration: none;
-            border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; margin-bottom: 15px;
+            width: 100%; padding: 14px; font-size: 1.1em; font-weight: 600;
+            color: #fff; text-decoration: none; border: none; border-radius: 8px;
+            cursor: pointer; transition: all 0.3s ease;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-hover));
         }
-        #generate-btn { background-color: #1877f2; }
-        #download-btn { background-color: #42b72a; }
-        #generate-btn:disabled { background-color: #ccd0d5; cursor: not-allowed; }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.4);
+        }
+        .button:disabled {
+            background: var(--input-bg);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        #download-btn { background: linear-gradient(45deg, #22c55e, #16a34a); }
+        #download-btn:hover { box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4); }
+
+        .loader { /* ... (অপরিবর্তিত) ... */ }
+        @keyframes spin { /* ... (অপরিবর্তিত) ... */ }
         
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #1877f2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #image-display {
+            margin-top: 20px;
+            min-height: 256px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
+            border: none;
+        }
+        #result-image {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0; /* প্রাথমিকভাবে অদৃশ্য */
+            transition: opacity 0.5s ease-in-out;
+        }
+        #result-image.visible {
+            opacity: 1; /* দৃশ্যমান করার জন্য ক্লাস */
+        }
         
-        #image-display { margin-top: 20px; min-height: 256px; background: #f0f2f5; border-radius: 8px; display: flex; justify-content: center; align-items: center; }
-        #result-image { max-width: 100%; border-radius: 8px; }
-        
-        .error-message { color: #fa383e; margin-top: 15px; }
+        .error-message { color: #f87171; margin-top: 15px; }
         .hidden { display: none; }
+        
+        footer { margin-top: 30px; color: var(--text-secondary); font-size: 0.9em; }
+        footer a { color: var(--accent-color); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 20px; }
+            h1 { font-size: 1.5em; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>AI Image Generator</h1>
+        <p>Craft your vision. Describe any image, and let AI bring it to life.</p>
         
         <div class="mode-selector">
-            <label><input type="radio" name="mode" value="text-to-image" checked> Text to Image</label>
-            <label><input type="radio" name="mode" value="image-to-image"> Image to Image</label>
+            <input type="radio" id="mode-text" name="mode" value="text-to-image" checked>
+            <label for="mode-text">Text to Image</label>
+            <input type="radio" id="mode-image" name="mode" value="image-to-image">
+            <label for="mode-image">Image to Image</label>
         </div>
 
-        <input type="text" id="prompt-input" placeholder="Describe what you want to create...">
+        <div class="input-group">
+            <i class="fa-solid fa-pen-fancy"></i>
+            <input type="text" id="prompt-input" placeholder="Describe what you want to create...">
+        </div>
         
         <div id="image-url-container" style="display: none;">
-            <input type="text" id="image-url-input" placeholder="Paste an image URL here...">
+            <div class="input-group">
+                <i class="fa-solid fa-link"></i>
+                <input type="text" id="image-url-input" placeholder="Paste an image URL here...">
+            </div>
+        </div>
+        
+        <div class="dimension-controls">
+            <div class="input-group">
+                <i class="fa-solid fa-arrows-left-right"></i>
+                <input type="number" id="width-input" value="512" min="256" max="1024" step="64" title="Width">
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-arrows-up-down"></i>
+                <input type="number" id="height-input" value="512" min="256" max="1024" step="64" title="Height">
+            </div>
         </div>
         
         <button id="generate-btn" class="button">Generate Image</button>
@@ -55,20 +219,26 @@
         </div>
         
         <a id="download-btn" class="button hidden" href="#" download="ai-generated-image.png">Download Image</a>
-        
     </div>
+    
+    <footer>
+        <p>Created by Abdun Nur</p>
+    </footer>
 
     <script>
+        // ... (ভেরিয়েবল ডিক্লারেশন অপরিবর্তিত) ...
         const promptInput = document.getElementById('prompt-input');
         const imageUrlInput = document.getElementById('image-url-input');
         const imageUrlContainer = document.getElementById('image-url-container');
+        const widthInput = document.getElementById('width-input');
+        const heightInput = document.getElementById('height-input');
         const generateBtn = document.getElementById('generate-btn');
         const loader = document.getElementById('loader');
         const resultImage = document.getElementById('result-image');
         const errorMessage = document.getElementById('error-message');
         const modeRadios = document.querySelectorAll('input[name="mode"]');
         const downloadBtn = document.getElementById('download-btn');
-
+        
         modeRadios.forEach(radio => {
             radio.addEventListener('change', (event) => {
                 if (event.target.value === 'image-to-image') {
@@ -82,6 +252,8 @@
         generateBtn.addEventListener('click', async () => {
             const selectedMode = document.querySelector('input[name="mode"]:checked').value;
             const prompt = promptInput.value;
+            const width = widthInput.value;
+            const height = heightInput.value;
             
             if (!prompt) {
                 alert('Please enter a prompt.');
@@ -89,15 +261,11 @@
             }
 
             let endpoint = '';
-            let requestOptions = {};
+            let payload = {};
 
             if (selectedMode === 'text-to-image') {
                 endpoint = '/generate-image';
-                requestOptions = {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt })
-                };
+                payload = { prompt: prompt, width: width, height: height };
             } else {
                 const imageUrl = imageUrlInput.value;
                 if (!imageUrl) {
@@ -105,16 +273,19 @@
                     return;
                 }
                 endpoint = '/transform-image';
-                requestOptions = {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt, imageUrl: imageUrl })
-                };
+                payload = { prompt: prompt, imageUrl: imageUrl, width: width, height: height };
             }
 
+            let requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+            
             generateBtn.disabled = true;
             loader.style.display = 'block';
             resultImage.src = '';
+            resultImage.classList.remove('visible'); // অ্যানিমেশন ক্লাস সরানো হলো
             errorMessage.textContent = '';
             downloadBtn.classList.add('hidden');
 
@@ -125,6 +296,7 @@
                     const imageBlob = await response.blob();
                     const imageUrl = URL.createObjectURL(imageBlob);
                     resultImage.src = imageUrl;
+                    resultImage.classList.add('visible'); // ফেড-ইন অ্যানিমেশনের জন্য ক্লাস যোগ
                     downloadBtn.href = imageUrl;
                     downloadBtn.classList.remove('hidden');
                 } else {
