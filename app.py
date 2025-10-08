@@ -25,22 +25,27 @@ def generate_image():
     try:
         data = request.get_json()
         prompt = data.get('prompt')
+        # নতুন: Frontend থেকে width এবং height গ্রহণ করা হচ্ছে
+        width = data.get('width', '512') # ডিফল্ট ভ্যালু 512
+        height = data.get('height', '512') # ডিফল্ট ভ্যালু 512
+
         if not prompt:
             return jsonify({"error": "Prompt is required."}), 400
         
         headers = {'Authorization': f'Bearer {ZYLA_API_KEY}'}
-        params = {'prompt': prompt, 'width': '512', 'height': '512'}
+        # নতুন: params এ ডাইনামিক width এবং height ব্যবহার করা হচ্ছে
+        params = {'prompt': prompt, 'width': width, 'height': height}
         
         response = requests.get(TEXT_TO_IMAGE_URL, headers=headers, params=params)
         response.raise_for_status()
         return send_file(io.BytesIO(response.content), mimetype='image/png')
     except Exception as e:
         print(f"Error in generate_image: {e}")
-        return jsonify({"error": "An error occurred while generating the image."}), 500
+        return jsonify({"error": f"An error occurred while generating the image."}), 500
 
 @app.route('/transform-image', methods=['POST'])
 def transform_image():
-    """ Image to Image ফিচারটি শুধুমাত্র URL ব্যবহার করে পরিচালনা করে। """
+    """ Image to Image ফিচারটি পরিচালনা করে। """
     if not ZYLA_API_KEY:
         return jsonify({"error": "API key is not configured."}), 500
 
@@ -48,12 +53,16 @@ def transform_image():
         data = request.get_json()
         prompt = data.get('prompt')
         image_url = data.get('imageUrl')
+        # নতুন: Frontend থেকে width এবং height গ্রহণ করা হচ্ছে
+        width = data.get('width', '512')
+        height = data.get('height', '512')
 
         if not prompt or not image_url:
             return jsonify({"error": "Prompt and Image URL are required."}), 400
 
         zylalabs_headers = {'Authorization': f'Bearer {ZYLA_API_KEY}', 'Content-Type': 'application/json'}
-        zylalabs_params = {'width': '512', 'height': '512'}
+        # নতুন: params এ ডাইনামিক width এবং height ব্যবহার করা হচ্ছে
+        zylalabs_params = {'width': width, 'height': height}
         zylalabs_payload = {'prompt': prompt, 'image': image_url}
         
         zylalabs_response = requests.post(IMAGE_TO_IMAGE_URL, headers=zylalabs_headers, params=zylalabs_params, json=zylalabs_payload)
@@ -72,7 +81,7 @@ def transform_image():
 
     except Exception as e:
         print(f"Error in transform_image: {e}")
-        return jsonify({"error": "An internal error occurred during image transformation."}), 500
+        return jsonify({"error": f"An internal server error occurred: {str(e)}"}), 500
 
 
 if __name__ == '__main__':
