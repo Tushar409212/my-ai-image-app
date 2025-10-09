@@ -18,7 +18,7 @@ def index():
 @app.route('/generate-image', methods=['POST'])
 def generate_image():
     if not ZYLA_API_KEY:
-        return jsonify({"error": "API key is not configured."}), 500
+        return jsonify({"error": "API key is not configured on the server."}), 500
     try:
         data = request.get_json()
         prompt = data.get('prompt')
@@ -41,7 +41,7 @@ def generate_image():
             try:
                 error_details = e.response.json().get('error', e.response.text)
                 error_message = f"API Error: {error_details}"
-            except:
+            except ValueError:
                 error_message = f"API Error: {e.response.text}"
         
         return jsonify({"error": error_message}), 500
