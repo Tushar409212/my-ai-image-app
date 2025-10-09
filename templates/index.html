@@ -20,144 +20,62 @@
             --text-light: #9ca3af;
             --border: #374151;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background);
             color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
         }
-
         .container {
-            width: 100%;
-            max-width: 500px;
+            width: 100%; max-width: 500px;
             background-color: var(--surface);
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            text-align: center;
+            padding: 30px; border-radius: 16px; border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); text-align: center;
         }
-
-        h1 {
-            font-weight: 700;
-            font-size: 1.75em;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            color: var(--text-light);
-            margin-bottom: 30px;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.9em;
-            font-weight: 500;
-            color: var(--text-light);
-        }
-
+        h1 { font-weight: 700; font-size: 1.75em; margin-bottom: 8px; }
+        .subtitle { color: var(--text-light); margin-bottom: 30px; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.9em; font-weight: 500; color: var(--text-light); }
         input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            font-size: 1em;
-            font-family: 'Inter', sans-serif;
-            border: 1px solid var(--border);
-            background-color: var(--background);
-            color: var(--text-main);
-            border-radius: 8px;
+            width: 100%; padding: 12px; font-size: 1em; font-family: 'Inter', sans-serif;
+            border: 1px solid var(--border); background-color: var(--background);
+            color: var(--text-main); border-radius: 8px;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-
         input[type="text"]:focus, input[type="number"]:focus {
-            outline: none;
-            border-color: var(--primary);
+            outline: none; border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
         }
-
-        .dimension-controls {
-            display: flex;
-            gap: 15px;
-        }
-        .dimension-controls .input-group {
-            flex: 1;
-        }
-
+        .dimension-controls { display: flex; gap: 15px; }
+        .dimension-controls .input-group { flex: 1; }
         .button {
-            display: inline-block;
-            width: 100%;
-            padding: 14px;
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #fff;
-            text-decoration: none;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease-out;
-            margin-top: 10px;
+            display: inline-block; width: 100%; padding: 14px;
+            font-size: 1.1em; font-weight: 600; color: #fff;
+            text-decoration: none; border: none; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease-out; margin-top: 10px;
         }
-        
         #generate-btn { background-color: var(--primary); }
         #generate-btn:hover { background-color: var(--primary-hover); }
         #generate-btn:disabled { background-color: #374151; cursor: not-allowed; }
-
         #download-btn { background-color: var(--secondary); }
         #download-btn:hover { background-color: var(--secondary-hover); }
-
         .loader {
-            border: 4px solid #374151;
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-            display: none;
+            border: 4px solid #374151; border-top: 4px solid var(--primary);
+            border-radius: 50%; width: 30px; height: 30px;
+            animation: spin 1s linear infinite; margin: 20px auto; display: none;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
         #image-display {
-            margin-top: 25px;
-            min-height: 200px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--background);
-            border: 1px solid var(--border);
+            margin-top: 25px; min-height: 200px; border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            background-color: var(--background); border: 1px solid var(--border);
         }
-
-        #result-image {
-            max-width: 100%;
-            border-radius: 11px;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        #result-image.visible {
-            opacity: 1;
-        }
-
+        #result-image { max-width: 100%; border-radius: 11px; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        #result-image.visible { opacity: 1; }
         .error-message { color: #f87171; margin-top: 15px; }
         .hidden { display: none; }
-
         footer { margin-top: 30px; color: var(--text-light); font-size: 0.9em; }
     </style>
 </head>
@@ -165,12 +83,10 @@
     <div class="container">
         <h1>AI Digital Canvas</h1>
         <p class="subtitle">An Engineering Vision by Abdun Nur</p>
-        
         <div class="input-group">
             <label for="prompt-input">Prompt</label>
             <input type="text" id="prompt-input" placeholder="e.g., A futuristic bridge, sustainable city...">
         </div>
-        
         <div class="dimension-controls">
             <div class="input-group">
                 <label for="width-input">Width</label>
@@ -181,22 +97,17 @@
                 <input type="number" id="height-input" value="512" min="256" max="1024" step="64">
             </div>
         </div>
-        
         <button id="generate-btn" class="button">Generate</button>
         <div class="loader" id="loader"></div>
         <div class="error-message" id="error-message"></div>
-        
         <div id="image-display">
             <img id="result-image" src="" alt="">
         </div>
-        
         <a id="download-btn" class="button hidden" href="#" download="ai-generated-image.png">Download Image</a>
     </div>
-    
     <footer>
         <p>Created by Abdun Nur</p>
     </footer>
-
     <script>
         const promptInput = document.getElementById('prompt-input');
         const widthInput = document.getElementById('width-input');
@@ -206,11 +117,7 @@
         const resultImage = document.getElementById('result-image');
         const errorMessage = document.getElementById('error-message');
         const downloadBtn = document.getElementById('download-btn');
-
         generateBtn.addEventListener('click', async () => {
-            // --- পরীক্ষার জন্য এই alert টি যোগ করা হয়েছে ---
-            alert('Button Clicked Test!'); 
-
             const prompt = promptInput.value;
             const width = widthInput.value;
             const height = heightInput.value;
@@ -219,10 +126,8 @@
                 alert('Please enter a prompt.');
                 return;
             }
-
             const endpoint = '/generate-image';
             const payload = { prompt, width, height };
-
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -235,10 +140,8 @@
             resultImage.classList.remove('visible');
             errorMessage.textContent = '';
             downloadBtn.classList.add('hidden');
-
             try {
                 const response = await fetch(endpoint, requestOptions);
-
                 if (response.ok) {
                     const imageBlob = await response.blob();
                     const imageUrl = URL.createObjectURL(imageBlob);
