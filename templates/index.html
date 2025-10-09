@@ -208,6 +208,9 @@
         const downloadBtn = document.getElementById('download-btn');
 
         generateBtn.addEventListener('click', async () => {
+            // --- পরীক্ষার জন্য এই alert টি যোগ করা হয়েছে ---
+            alert('Button Clicked Test!'); 
+
             const prompt = promptInput.value;
             const width = widthInput.value;
             const height = heightInput.value;
@@ -248,4 +251,13 @@
                     errorMessage.textContent = errorData.error || 'Failed to generate image.';
                 }
             } catch (error) {
-                console.error('
+                console.error('Error:', error);
+                errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+            } finally {
+                generateBtn.disabled = false;
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
