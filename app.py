@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Render-এর Environment Variable থেকে API Key লোড হবে
 ZYLA_API_KEY = os.getenv("ZYLA_API_KEY") 
 
-# শুধুমাত্র Text-to-Image URL টি রাখা হয়েছে
+# Text-to-Image URL
 TEXT_TO_IMAGE_URL = "https://zylalabs.com/api/10640/ai+image+generator+nano+banana+api/20188/generate+image"
 
 @app.route('/')
