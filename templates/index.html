@@ -4,19 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Digital Canvas | Abdun Nur</title>
-    <link rel="icon" href="https://emojicdn.elk.sh/🎨?style=twitter" type="image/png">
+    <!-- Favicon -->
+    <link rel="icon" href="https://emojicdn.elk.sh/✨?style=twitter" type="image/png">
+    <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #0F172A;
-            --bg-light: #1E293B;
-            --border-color: #334155;
-            --text-primary: #F8FAFC;
-            --text-secondary: #94A3B8;
-            --accent: #818CF8;
-            --accent-hover: #A78BFA;
+            --bg-dark: #0a0a0a;
+            --surface: #1a1a1a;
+            --border-color: #2e2e2e;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent: #9333ea; /* Purple */
+            --accent-hover: #a855f7;
+            --success: #22c55e;
+            --success-hover: #4ade80;
         }
 
         * {
@@ -35,16 +40,29 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, rgba(147, 51, 234, 0.1), transparent 40%),
+                        linear-gradient(225deg, rgba(59, 130, 246, 0.1), transparent 40%);
         }
 
         .container {
             width: 100%;
             max-width: 550px;
-            background: var(--bg-light);
+            background: var(--surface);
             padding: 2.5rem;
             border-radius: 1rem;
             border: 1px solid var(--border-color);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
 
@@ -62,6 +80,7 @@
         .input-group {
             margin-bottom: 1.25rem;
             text-align: left;
+            position: relative;
         }
 
         .input-group label {
@@ -72,10 +91,17 @@
             color: var(--text-secondary);
         }
 
-        input[type="text"],
-        input[type="number"] {
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(25%);
+            color: var(--text-secondary);
+        }
+
+        textarea, input[type="number"] {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.75rem 1rem 0.75rem 2.5rem; /* Space for icon */
             font-size: 1rem;
             font-family: 'Poppins', sans-serif;
             border: 1px solid var(--border-color);
@@ -84,22 +110,19 @@
             border-radius: 0.5rem;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
+        textarea { resize: vertical; min-height: 120px;}
 
-        input[type="text"]:focus,
-        input[type="number"]:focus {
+        textarea:focus, input[type="number"]:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.3);
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.3);
         }
 
         .dimension-controls {
             display: flex;
             gap: 1rem;
         }
-
-        .dimension-controls .input-group {
-            flex: 1;
-        }
+        .dimension-controls .input-group { flex: 1; }
 
         .button {
             display: inline-block;
@@ -116,26 +139,12 @@
             margin-top: 1rem;
         }
 
-        #generate-btn {
-            background-color: var(--accent);
-        }
-        #generate-btn:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-2px);
-        }
-        #generate-btn:disabled {
-            background-color: #334155;
-            cursor: not-allowed;
-            transform: none;
-        }
+        #generate-btn { background-color: var(--accent); }
+        #generate-btn:hover { background-color: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2); }
+        #generate-btn:disabled { background-color: #334155; cursor: not-allowed; transform: none; box-shadow: none;}
         
-        #download-btn {
-             background-color: #22c55e;
-        }
-        #download-btn:hover {
-             background-color: #4ade80;
-        }
-
+        #download-btn { background-color: var(--success); }
+        #download-btn:hover { background-color: var(--success-hover); }
 
         .loader {
             border: 4px solid var(--border-color);
@@ -147,7 +156,6 @@
             margin: 1.5rem auto;
             display: none;
         }
-
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         #image-display {
@@ -165,32 +173,30 @@
         #result-image {
             max-width: 100%;
             display: block;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        #result-image.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
-        .error-message {
-            color: #fca5a5;
-            margin-top: 1rem;
-        }
-
-        .hidden {
-            display: none;
-        }
+        .error-message { color: #fca5a5; margin-top: 1rem; }
+        .hidden { display: none; }
         
-        footer {
-            margin-top: 2rem;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
+        footer { margin-top: 2rem; color: var(--text-secondary); font-size: 0.875rem; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>AI Digital Canvas</h1>
-        <p class="subtitle">An Engineering Vision by Abdun Nur</p>
+        <p class="subtitle">Bring your imagination to life with the power of AI</p>
 
         <div class="input-group">
             <label for="prompt-input">Prompt</label>
-            <input type="text" id="prompt-input" placeholder="e.g., A futuristic city skyline at sunset">
+            <i class="fa-solid fa-pen-ruler"></i>
+            <textarea id="prompt-input" rows="4" placeholder="e.g., A futuristic city skyline at sunset, cyberpunk style"></textarea>
         </div>
 
         <div class="dimension-controls">
@@ -251,6 +257,7 @@
             generateBtn.disabled = true;
             loader.style.display = 'block';
             resultImage.src = '';
+            resultImage.classList.remove('visible');
             errorMessage.textContent = '';
             downloadBtn.classList.add('hidden');
 
@@ -261,6 +268,7 @@
                     const imageBlob = await response.blob();
                     const imageUrl = URL.createObjectURL(imageBlob);
                     resultImage.src = imageUrl;
+                    resultImage.classList.add('visible');
                     downloadBtn.href = imageUrl;
                     downloadBtn.classList.remove('hidden');
                 } else {
