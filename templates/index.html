@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Image Generator | Abdun Nur</title>
+    <title>AI Digital Canvas | Abdun Nur</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -20,11 +20,7 @@
             --border-color: rgba(139, 148, 158, 0.2);
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Roboto', sans-serif;
@@ -35,17 +31,12 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden; /* অ্যানিমেশনের জন্য */
+            overflow: hidden;
             position: relative;
         }
 
-        /* নতুন: অ্যানিমেটেড ব্যাকগ্রাউন্ড */
         .background-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
             background: linear-gradient(45deg, rgba(88, 166, 255, 0.1), rgba(45, 212, 191, 0.1), rgba(168, 85, 247, 0.1));
             background-size: 400% 400%;
@@ -58,32 +49,17 @@
         }
 
         .container {
-            width: 100%;
-            max-width: 500px;
+            width: 100%; max-width: 500px;
             background: var(--container-bg);
-            padding: 40px;
-            border-radius: 20px;
+            padding: 40px; border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
             border: 1px solid var(--border-color);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            text-align: center;
-            z-index: 1;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            text-align: center; z-index: 1;
         }
 
-        h1 {
-            color: var(--text-primary);
-            font-weight: 700;
-            font-size: 2em;
-            margin-bottom: 5px;
-        }
-        
-        /* নতুন: আপনার জন্য সাবটাইটেল */
-        .subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 25px;
-            font-weight: 300;
-        }
+        h1 { color: var(--text-primary); font-weight: 700; font-size: 2em; margin-bottom: 5px; }
+        .subtitle { color: var(--text-secondary); margin-bottom: 25px; font-weight: 300; }
 
         .input-group { position: relative; margin-bottom: 15px; }
         .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
@@ -105,123 +81,10 @@
         .button {
             display: inline-block; width: 100%; padding: 14px; font-size: 1.1em; font-weight: 700;
             color: #fff; text-decoration: none; border: none; border-radius: 8px;
-            cursor: pointer; transition: all 0.3s ease; margin-bottom: 15px;
+            cursor: pointer; transition: all 0.2s ease-out;
+            margin-bottom: 15px;
             background: var(--accent-color);
         }
-        .button:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 4px 20px rgba(88, 166, 255, 0.2); }
-        .button:disabled { background: #30363d; cursor: not-allowed; transform: none; box-shadow: none; }
-        #download-btn { background: #238636; }
-        #download-btn:hover { background: #2ea043; box-shadow: 0 4px 20px rgba(46, 160, 67, 0.2); }
-        
-        .loader { /* ... (অপরিবর্তিত) ... */ }
-        
-        #image-display { margin-top: 20px; min-height: 256px; border-radius: 12px; display: flex; justify-content: center; align-items: center; background: transparent; }
-        #result-image { max-width: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); opacity: 0; transform: scale(0.95); transition: opacity 0.5s ease, transform 0.5s ease; }
-        #result-image.visible { opacity: 1; transform: scale(1); }
-        
-        .error-message { color: #f87171; margin-top: 15px; }
-        .hidden { display: none; }
-        
-        footer { margin-top: 40px; color: var(--text-secondary); font-size: 0.9em; }
-        
-        @media (max-width: 600px) { body { padding: 10px; } .container { padding: 20px; } h1 { font-size: 1.5em; } }
-    </style>
-</head>
-<body>
-    <div class="background-animation"></div>
-    <div class="container">
-        <h1>AI Digital Canvas</h1>
-        <p class="subtitle">An Engineering Vision by Abdun Nur</p>
-        
-        <div class="input-group">
-            <i class="fa-solid fa-lightbulb"></i>
-            <input type="text" id="prompt-input" placeholder="e.g., A futuristic bridge, sustainable city...">
-        </div>
-        
-        <div class="dimension-controls">
-            <div class="input-group">
-                <label for="width-input">Width</label>
-                <input type="number" id="width-input" value="512" min="256" max="1024" step="64">
-            </div>
-            <div class="input-group">
-                <label for="height-input">Height</label>
-                <input type="number" id="height-input" value="512" min="256" max="1024" step="64">
-            </div>
-        </div>
-        
-        <button id="generate-btn" class="button">Generate <i class="fa-solid fa-wand-magic-sparkles"></i></button>
-        <div class="loader" id="loader"></div>
-        <div class="error-message" id="error-message"></div>
-        
-        <div id="image-display">
-            <img id="result-image" src="" alt="">
-        </div>
-        
-        <a id="download-btn" class="button hidden" href="#" download="ai-generated-image.png">Download Image</a>
-    </div>
-    
-    <footer>
-        <p>Created by Abdun Nur & Gemini</p>
-    </footer>
-
-    <script>
-        const promptInput = document.getElementById('prompt-input');
-        const widthInput = document.getElementById('width-input');
-        const heightInput = document.getElementById('height-input');
-        const generateBtn = document.getElementById('generate-btn');
-        const loader = document.getElementById('loader');
-        const resultImage = document.getElementById('result-image');
-        const errorMessage = document.getElementById('error-message');
-        const downloadBtn = document.getElementById('download-btn');
-
-        generateBtn.addEventListener('click', async () => {
-            const prompt = promptInput.value;
-            const width = widthInput.value;
-            const height = heightInput.value;
-            
-            if (!prompt) {
-                alert('Please enter a prompt.');
-                return;
-            }
-
-            const endpoint = '/generate-image';
-            const payload = { prompt, width, height };
-
-            const requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            };
-            
-            generateBtn.disabled = true;
-            loader.style.display = 'block';
-            resultImage.src = '';
-            resultImage.classList.remove('visible');
-            errorMessage.textContent = '';
-            downloadBtn.classList.add('hidden');
-
-            try {
-                const response = await fetch(endpoint, requestOptions);
-
-                if (response.ok) {
-                    const imageBlob = await response.blob();
-                    const imageUrl = URL.createObjectURL(imageBlob);
-                    resultImage.src = imageUrl;
-                    resultImage.classList.add('visible');
-                    downloadBtn.href = imageUrl;
-                    downloadBtn.classList.remove('hidden');
-                } else {
-                    const errorData = await response.json();
-                    errorMessage.textContent = errorData.error || 'Failed to generate image.';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                errorMessage.textContent = 'An unexpected error occurred. Please try again.';
-            } finally {
-                generateBtn.disabled = false;
-                loader.style.display = 'none';
-            }
-        });
-    </script>
-</body>
-</html>
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 20px rgba(88, 166, 255, 0.25);
