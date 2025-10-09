@@ -3,126 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Image Generator | Abdun Nur</title>
-    <link rel="icon" href="https://emojicdn.elk.sh/✨?style=twitter" type="image/png">
+    <title>AI Digital Canvas | Abdun Nur</title>
+    <link rel="icon" href="https://emojicdn.elk.sh/🎨?style=twitter" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --background: #111111;
-            --surface: #1a1a1a;
-            --primary: #8a2be2;
-            --primary-hover: #9932cc;
-            --text-main: #ffffff;
-            --text-light: #a0a0a0;
-            --border: #333333;
+            --bg-dark: #0F172A;
+            --bg-light: #1E293B;
+            --border-color: #334155;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --accent: #818CF8;
+            --accent-hover: #A78BFA;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--background);
-            color: var(--text-main);
-            background-image: 
-                linear-gradient(rgba(17, 17, 17, 0.95), rgba(17, 17, 17, 0.95)),
-                radial-gradient(ellipse at center, rgba(138, 43, 226, 0.1) 0%, transparent 70%);
-            background-attachment: fixed;
-        }
-        .content-wrapper { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
-        header, footer { padding: 20px 0; }
-        header .content-wrapper, footer .content-wrapper {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 1.2em; }
-        .logo i { color: var(--primary); }
-        .credit { font-weight: 500; }
-        
-        .hero { text-align: center; padding: 100px 0; }
-        .hero .powered-by {
-            display: inline-block;
-            background-color: rgba(138, 43, 226, 0.2);
-            color: var(--primary);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
+
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background: var(--bg-light);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
             font-weight: 500;
-            margin-bottom: 20px;
-            border: 1px solid rgba(138, 43, 226, 0.5);
+            color: var(--text-secondary);
         }
-        .hero h1 {
-            font-size: 3.5em;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, var(--primary), #ffffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            border-radius: 0.5rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
-        .hero p { font-size: 1.2em; color: var(--text-light); max-width: 600px; margin: 0 auto 30px auto; }
-        .cta-buttons { display: flex; justify-content: center; gap: 20px; }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.3);
+        }
+
+        .dimension-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .dimension-controls .input-group {
+            flex: 1;
+        }
+
         .button {
-            padding: 15px 30px; font-size: 1em; font-weight: 600; color: #fff;
-            text-decoration: none; border: none; border-radius: 10px; cursor: pointer;
+            display: inline-block;
+            width: 100%;
+            padding: 0.875rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: 1rem;
         }
-        .btn-primary { background-color: var(--primary); }
-        .btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-3px); }
-        .btn-secondary { background-color: var(--surface); border: 1px solid var(--border); }
-        .btn-secondary:hover { background-color: var(--border); transform: translateY(-3px); }
 
-        .features { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 50px 0; }
-        .feature-card {
-            background-color: var(--surface);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid var(--border);
-            transition: transform 0.3s, box-shadow 0.3s;
+        #generate-btn {
+            background-color: var(--accent);
         }
-        /* নতুন: কার্ডে হোভার এফেক্ট এবং কার্সার পরিবর্তন */
-        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); cursor: pointer; }
-        .feature-card h3 { font-size: 1.5em; margin-bottom: 10px; }
-        .feature-card p { color: var(--text-light); }
-        /* নতুন: কার্ডকে লিংকের মতো বানানোর জন্য */
-        .feature-link { text-decoration: none; color: inherit; }
+        #generate-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+        #generate-btn:disabled {
+            background-color: #334155;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #download-btn {
+             background-color: #22c55e;
+        }
+        #download-btn:hover {
+             background-color: #4ade80;
+        }
 
-        .generator-section { padding: 80px 0; text-align: center; }
-        .generator-form {
-            max-width: 700px; margin: 40px auto 0 auto;
-            background-color: var(--surface); padding: 30px; border-radius: 15px;
-            border: 1px solid var(--border);
-        }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-light); }
-        textarea, input[type="number"] {
-            width: 100%; padding: 12px; font-size: 1em; font-family: 'Inter', sans-serif;
-            border: 1px solid var(--border); background-color: var(--background);
-            color: var(--text-main); border-radius: 8px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        textarea { resize: vertical; min-height: 100px; }
-        textarea:focus, input[type="number"]:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.3); }
-        .dimension-controls { display: flex; gap: 15px; }
-        .dimension-controls .input-group { flex: 1; }
 
-        .loader { border: 4px solid var(--border); border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
+        .loader {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 1.5rem auto;
+            display: none;
+        }
+
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #result-container { margin-top: 40px; }
-        #image-display { position: relative; min-height: 256px; border-radius: 15px; display: flex; justify-content: center; align-items: center; background-color: var(--background); border: 1px solid var(--border); overflow: hidden; }
-        #result-image { max-width: 100%; border-radius: 14px; opacity: 0; transition: opacity 0.5s ease-in-out; }
-        #result-image.visible { opacity: 1; }
-        #download-btn {
-            position: absolute; bottom: 20px; right: 20px;
-            padding: 10px 20px; background-color: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px); border-radius: 8px;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        #image-display {
+            margin-top: 2rem;
+            min-height: 256px;
+            border-radius: 0.75rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
         }
-        #download-btn.visible { opacity: 1; pointer-events: auto; }
 
-        .error-message { color: #f87171; margin-top: 15px; }
+        #result-image {
+            max-width: 100%;
+            display: block;
+        }
+
+        .error-message {
+            color: #fca5a5;
+            margin-top: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
         
-        footer
+        footer {
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Digital Canvas</h1>
+        <p class="subtitle">An Engineering Vision by Abdun Nur</p>
+
+        <div class="input-group">
+            <label for="prompt-input">Prompt</label>
+            <input type="text" id="prompt-input" placeholder="e.g., A futuristic city skyline at sunset">
+        </div>
+
+        <div class="dimension-controls">
+            <div class="input-group">
+                <label for="width-input">Width</label>
+                <input type="number" id="width-input" value="512" min="256" max="1024" step="64">
+            </div>
+            <div class="input-group">
+                <label for="height-input">Height</label>
+                <input type="number" id="height-input" value="512" min="256" max="1024" step="64">
+            </div>
+        </div>
+
+        <button id="generate-btn" class="button">Generate Image</button>
+        <div class="loader" id="loader"></div>
+        <div class="error-message" id="error-message"></div>
+
+        <div id="image-display">
+            <img id="result-image" src="" alt="">
+        </div>
+
+        <a id="download-btn" class="button hidden" href="#" download="ai-generated-image.png">Download Image</a>
+    </div>
+
+    <footer>
+        <p>Created by Abdun Nur</p>
+    </footer>
+
+    <script>
+        const promptInput = document.getElementById('prompt-input');
+        const widthInput = document.getElementById('width-input');
+        const heightInput = document.getElementById('height-input');
+        const generateBtn = document.getElementById('generate-btn');
+        const loader = document.getElementById('loader');
+        const resultImage = document.getElementById('result-image');
+        const errorMessage = document.getElementById('error-message');
+        const downloadBtn = document.getElementById('download-btn');
+
+        generateBtn.addEventListener('click', async () => {
+            const prompt = promptInput.value;
+            const width = widthInput.value;
+            const height = heightInput.value;
+            
+            if (!prompt) {
+                alert('Please enter a prompt.');
+                return;
+            }
+
+            const endpoint = '/generate-image';
+            const payload = { prompt, width, height };
+
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+            
+            generateBtn.disabled = true;
+            loader.style.display = 'block';
+            resultImage.src = '';
+            errorMessage.textContent = '';
+            downloadBtn.classList.add('hidden');
+
+            try {
+                const response = await fetch(endpoint, requestOptions);
+
+                if (response.ok) {
+                    const imageBlob = await response.blob();
+                    const imageUrl = URL.createObjectURL(imageBlob);
+                    resultImage.src = imageUrl;
+                    downloadBtn.href = imageUrl;
+                    downloadBtn.classList.remove('hidden');
+                } else {
+                    const errorData = await response.json();
+                    errorMessage.textContent = errorData.error || 'Failed to generate image.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+            } finally {
+                generateBtn.disabled = false;
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
