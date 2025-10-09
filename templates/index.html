@@ -82,9 +82,12 @@
             border: 1px solid var(--border);
             transition: transform 0.3s, box-shadow 0.3s;
         }
-        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        /* নতুন: কার্ডে হোভার এফেক্ট এবং কার্সার পরিবর্তন */
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); cursor: pointer; }
         .feature-card h3 { font-size: 1.5em; margin-bottom: 10px; }
         .feature-card p { color: var(--text-light); }
+        /* নতুন: কার্ডকে লিংকের মতো বানানোর জন্য */
+        .feature-link { text-decoration: none; color: inherit; }
 
         .generator-section { padding: 80px 0; text-align: center; }
         .generator-form {
@@ -122,57 +125,4 @@
 
         .error-message { color: #f87171; margin-top: 15px; }
         
-        footer { border-top: 1px solid var(--border); }
-        footer .content-wrapper { font-size: 0.9em; color: var(--text-light); }
-        .footer-left { display: flex; align-items: center; gap: 10px; }
-        
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5em; }
-            .features { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="content-wrapper">
-            <div class="logo"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Image Generator</div>
-            <div class="credit">Created by Abdun Nur</div>
-        </div>
-    </header>
-
-    <main class="content-wrapper">
-        <section class="hero">
-            <div class="powered-by"><i class="fa-solid fa-bolt"></i> Powered by Zyla Labs AI</div>
-            <h1>Transform Your Ideas Into Stunning Images</h1>
-            <p>Generate breathtaking images from text prompts or transform existing images with the power of advanced AI technology. Create, innovate, and bring your vision to life.</p>
-            <div class="cta-buttons">
-                <a href="#generator-section" class="button btn-primary"><i class="fa-solid fa-image"></i> Generate Image</a>
-                <button id="transform-btn-dummy" class="button btn-secondary"><i class="fa-solid fa-crop-simple"></i> Transform Image</button>
-            </div>
-        </section>
-
-        <section class="features">
-            <div class="feature-card">
-                <h3>Text to Image</h3>
-                <p>Describe your vision and watch AI bring it to life with stunning detail.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Image Transformation</h3>
-                <p>Transform existing images with AI-powered modifications and enhancements.</p>
-            </div>
-        </section>
-
-        <section id="generator-section" class="generator-section">
-            <h2>Text to Image Generation</h2>
-            <p class="subtitle">Describe your vision and let AI create it for you</p>
-
-            <div class="generator-form">
-                <div class="input-group">
-                    <label for="prompt-input"><i class="fa-solid fa-lightbulb"></i> Create Your Image</label>
-                    <textarea id="prompt-input" rows="4" placeholder="Enter a detailed description of the image you want to generate..."></textarea>
-                </div>
-                
-                <div class="dimension-controls">
-                    <div class="input-group">
-                        <label for="width-input">Width (px)</label>
-                        <input type="number" id="width-input" value="1024" min="256" max="1024" step="64">
+        footer
